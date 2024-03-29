@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Log Viewer</title>
+</head>
+<body>
+    <h1>Remote Log Viewer</h1>
+    <div id="logContent"></div>
+
+    <script>
+        // 获取fileuri参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileuri = urlParams.get('fileuri');
+
+        if (fileuri) {
+            // 发送GET请求获取远程日志文件内容
+            fetch(fileuri)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                // 显示日志内容
+                document.getElementById('logContent').innerText = data;
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                document.getElementById('logContent').innerText = 'Error retrieving log file: ' + error.message;
+            });
+        } else {
+            // 如果未提供fileuri参数，则显示提示信息
+            document.getElementById('logContent').innerText = 'No fileuri parameter provided.';
+        }
+    </script>
+</body>
+</html>
